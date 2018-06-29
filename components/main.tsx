@@ -1,5 +1,7 @@
 import app from 'apprun';
 
+app.on('#', () => app.run('/'));
+
 const view = (children) => <html>
   <head>
     <meta charset="utf-8" />
