@@ -22,7 +22,7 @@
   "homepage": "https://github.com/yysun/apprun-ssr#readme",
   "dependencies": {
     "@types/node": "^10.3.6",
-    "apprun": "^1.13.3",
+    "apprun": "^1.13.5",
     "express": "^4.16.3"
   },
   "devDependencies": {
