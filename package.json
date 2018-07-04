@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/yysun/apprun-ssr#readme",
   "dependencies": {
-    "@types/node": "^10.3.6",
-    "apprun": "^1.13.5",
+    "@types/node": "^10.5.1",
+    "apprun": "^1.13.7",
     "express": "^4.16.3"
   },
   "devDependencies": {
