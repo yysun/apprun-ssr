@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const apprun_1 = require("apprun");
-apprun_1.default.on('#', () => apprun_1.default.run('/'));
 const view = (children) => apprun_1.default.createElement("html", null,
     apprun_1.default.createElement("head", null,
         apprun_1.default.createElement("meta", { charset: "utf-8" }),
