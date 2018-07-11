@@ -1,15 +1,17 @@
 import app, {Component} from 'apprun';
 
-export default class extends Component {
-  state = 'About';
+export class About extends Component {
+  state = '';
 
-  view = (state) => {
-    return <div>
-      {state} - {new Date().toLocaleTimeString()}
-    </div>
-  }
-
+  view = (state) => <div>
+    About  - {state}
+  </div>;
+  
   update = {
-    '/about': state => state,
+    '/about': _ => {
+      throw new Error('test');
+    }
   }
 }
+
+export default new About().mount();

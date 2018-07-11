@@ -1,6 +1,4 @@
-import apprun from 'apprun';
 import * as viewEngine from 'apprun/viewEngine';
-
 import * as express from 'express';
 const app = express();
 
@@ -9,34 +7,39 @@ app.use(express.static('public'));
 // set apprun as view engine
 app.engine('js', viewEngine());
 app.set('view engine', 'js');
+app.set('views', __dirname + '/components');
 
-// set global ssr flag
-app.use((req, res, next) => {
-  global['ssr'] = req.headers.accept.indexOf('application/json') < 0;
-  next();
-});
-
-import layout from './components/main';
-
-const route = async (req) => new Promise((resolve, reject) => {
-  apprun.on('debug', p => {
-    if (p.vdom) resolve(p.vdom);
+const route = async (component, req, res) => {
+  const ssr = req.headers.accept.indexOf('application/json') < 0;
+  const getVdom = () => new Promise((resolve, reject) => {
+    let vdom = false;
+    const path = req.path === '/' ? '/home' : req.path;
+    setTimeout(() => !vdom && reject(new Error('Cannot route:' + [path])), 300);
+    component.run(path, html => resolve(vdom = html));
   });
-  setTimeout(() => { reject('Timeout') }, 30000);
   try {
-    apprun.run('route', req.path);
+    const vdom = await getVdom();
+    res.render('layout', { ssr, vdom });
   } catch (ex) {
-    reject(ex.message);
+    console.log(ex);
+    res.render('layout', { ssr, vdom: { Error: ex.message || ex } });
   }
+}
+
+import home from './components/Home';
+import about from './components/About';
+import contact from './components/Contact';
+
+app.get(/^\/(home)?$/, (req, res) => {
+  route(home, req, res);
 });
 
-app.get('*', async (req, res) => {
-  try {
-    const vdom = await route(req);
-    res.render('index', { layout, vdom });
-  } catch (ex) {
-    res.render('index', { layout, vdom: ex });
-  }
+app.get('/about', (req, res) => {
+  route(about, req, res);
+});
+
+app.get('/contact', (req, res) => {
+  route(contact, req, res);
 });
 
 const listener = app.listen(process.env.PORT || 3000, function () {

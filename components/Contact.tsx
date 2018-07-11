@@ -1,16 +1,16 @@
 import app, {Component} from 'apprun';
 
-export default class extends Component {
-  state = 'Contact';
+export class Contact extends Component {
+  state = '';
 
-  view = (state) => {
-    return <div>
-      {state} - {new Date().toLocaleTimeString()}
-    </div>
-  }
+  view = (state) => <div>
+    Contact - {state}
+  </div>;
 
   update = {
-    '/contact': state => state,
+    '/contact': _ => new Date().toLocaleTimeString()
   }
 }
+
+export default new Contact().mount();
 

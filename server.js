@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const apprun_1 = require("apprun");
 const viewEngine = require("apprun/viewEngine");
 const express = require("express");
 const app = express();
@@ -16,36 +15,36 @@ app.use(express.static('public'));
 // set apprun as view engine
 app.engine('js', viewEngine());
 app.set('view engine', 'js');
-// set global ssr flag
-app.use((req, res, next) => {
-    global['ssr'] = req.headers.accept.indexOf('application/json') < 0;
-    next();
-});
-const main_1 = require("./components/main");
-const route = (req) => __awaiter(this, void 0, void 0, function* () {
-    return new Promise((resolve, reject) => {
-        apprun_1.default.on('debug', p => {
-            if (p.vdom)
-                resolve(p.vdom);
-        });
-        setTimeout(() => { reject('Timeout'); }, 30000);
-        try {
-            apprun_1.default.run('route', req.path);
-        }
-        catch (ex) {
-            reject(ex.message);
-        }
+app.set('views', __dirname + '/components');
+const route = (component, req, res) => __awaiter(this, void 0, void 0, function* () {
+    const ssr = req.headers.accept.indexOf('application/json') < 0;
+    const getVdom = () => new Promise((resolve, reject) => {
+        let vdom = false;
+        const path = req.path === '/' ? '/home' : req.path;
+        setTimeout(() => !vdom && reject(new Error('Cannot route:' + [path])), 300);
+        component.run(path, html => resolve(vdom = html));
     });
-});
-app.get('*', (req, res) => __awaiter(this, void 0, void 0, function* () {
     try {
-        const vdom = yield route(req);
-        res.render('index', { layout: main_1.default, vdom });
+        const vdom = yield getVdom();
+        res.render('layout', { ssr, vdom });
     }
     catch (ex) {
-        res.render('index', { layout: main_1.default, vdom: ex });
+        console.log(ex);
+        res.render('layout', { ssr, vdom: { Error: ex.message || ex } });
     }
-}));
+});
+const Home_1 = require("./components/Home");
+const About_1 = require("./components/About");
+const Contact_1 = require("./components/Contact");
+app.get(/^\/(home)?$/, (req, res) => {
+    route(Home_1.default, req, res);
+});
+app.get('/about', (req, res) => {
+    route(About_1.default, req, res);
+});
+app.get('/contact', (req, res) => {
+    route(Contact_1.default, req, res);
+});
 const listener = app.listen(process.env.PORT || 3000, function () {
     console.log('Your app is listening on port ' + listener.address().port);
 });

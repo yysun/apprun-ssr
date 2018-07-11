@@ -1,16 +1,20 @@
 import app, {Component} from 'apprun';
 
-export default class extends Component {
-  state = 'Home';
+const SSR = ({ cb }, children) => cb ? cb(children) : children;
 
-  view = (state) => {
-    return <div>
-      {state} - {new Date().toLocaleTimeString()}
+export class Home extends Component {
+  state = ''
+
+  view = (state) => <SSR cb={state.cb}>
+    <div>
+      Home - {state.time}
     </div>
-  }
+  </SSR>;
+
 
   update = {
-    '/': state => state,
+    '/home': (_, cb) => ({ time: new Date().toLocaleTimeString(), cb })
   }
 }
 
+export default new Home().mount();
