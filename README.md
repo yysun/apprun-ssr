@@ -5,7 +5,7 @@
 In this SSR AppRun application example, there are:
 
 * The express.js server application (server.ts),
-* The AppRun main program (components/main.tsx),
+* The site layout (components/layout.tsx),
 *	The AppRun components (components/*.tsx)
 * The client-side application (/public/spa.js).
 

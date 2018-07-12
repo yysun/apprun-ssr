@@ -1,6 +1,7 @@
 import app from 'apprun';
 
-export default ({ ssr, vdom }) => !ssr ? vdom :
+export default ({ ssr, vdom }) => {
+  return !ssr ? vdom :
   <html>
   <head>
     <meta charset="utf-8" />
@@ -44,4 +45,4 @@ export default ({ ssr, vdom }) => !ssr ? vdom :
     <script src="spa.js"></script>
   </body>
 </html>
-
+}

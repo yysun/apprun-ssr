@@ -16,16 +16,22 @@ app.use(express.static('public'));
 app.engine('js', viewEngine());
 app.set('view engine', 'js');
 app.set('views', __dirname + '/components');
-const route = (component, req, res) => __awaiter(this, void 0, void 0, function* () {
+const route = (Component, req, res) => __awaiter(this, void 0, void 0, function* () {
     const ssr = req.headers.accept.indexOf('application/json') < 0;
-    const getVdom = () => new Promise((resolve, reject) => {
-        let vdom = false;
-        const path = req.path === '/' ? '/home' : req.path;
-        setTimeout(() => !vdom && reject(new Error('Cannot route:' + [path])), 300);
-        component.run(path, html => resolve(vdom = html));
+    const getState = (component) => new Promise((resolve, reject) => {
+        const state = component.state;
+        if (state instanceof Promise)
+            state.then(s => resolve(s))
+                .catch(r => reject(r));
+        else
+            resolve(state);
     });
     try {
-        const vdom = yield getVdom();
+        const component = new Component().mount();
+        const event = (req.path === '/' ? '/home' : req.path).substring(1);
+        component.run(event);
+        const state = yield getState(component);
+        const vdom = component.view(state);
         res.render('layout', { ssr, vdom });
     }
     catch (ex) {
@@ -36,15 +42,15 @@ const route = (component, req, res) => __awaiter(this, void 0, void 0, function*
 const Home_1 = require("./components/Home");
 const About_1 = require("./components/About");
 const Contact_1 = require("./components/Contact");
-app.get(/^\/(home)?$/, (req, res) => {
+app.get(/^\/(home)?$/, (req, res) => __awaiter(this, void 0, void 0, function* () {
     route(Home_1.default, req, res);
-});
-app.get('/about', (req, res) => {
+}));
+app.get('/about', (req, res) => __awaiter(this, void 0, void 0, function* () {
     route(About_1.default, req, res);
-});
-app.get('/contact', (req, res) => {
+}));
+app.get('/contact', (req, res) => __awaiter(this, void 0, void 0, function* () {
     route(Contact_1.default, req, res);
-});
+}));
 const listener = app.listen(process.env.PORT || 3000, function () {
     console.log('Your app is listening on port ' + listener.address().port);
 });
