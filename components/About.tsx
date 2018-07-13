@@ -10,7 +10,7 @@ export default class extends Component {
   }
 
   update = {
-    'about': _ => {
+    '/about': _ => {
       throw new Error('test');
       // return new Date().toLocaleTimeString()
     }

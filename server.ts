@@ -19,16 +19,19 @@ const route = async (Component, req, res) => {
     else
       resolve(state);
   });
+  const event = (req.path === '/' ? '/home' : req.path);
+  const component = new Component();
   try {
-    const component = new Component().mount();
-    const event = (req.path === '/' ? '/home' : req.path).substring(1);
+    component.mount();
     component.run(event);
     const state = await getState(component);
     const vdom = component.view(state);
     res.render('layout', { ssr, vdom });
   } catch (ex) {
-    console.log(ex);
     res.render('layout', { ssr, vdom: { Error: ex.message || ex } });
+    console.log(ex);
+  } finally {
+    component.unmount();
   }
 }
 
