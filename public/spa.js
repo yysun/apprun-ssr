@@ -6,7 +6,7 @@ const get = url => new Promise((resolve, reject) => {
 })
 
 window.addEventListener('popstate', (e) => {
-  const path = document.location.pathname;
+  const path = location.pathname;
   app.run('/', path);
 });
 
@@ -18,7 +18,7 @@ $('.navbar-nav li a').on('click', function (event) {
   app.run('/', menu.pathname);
 });
 
-const view = (state) => state;
+const view = state => state;
 
 const update = {
   '/': async (_, path) => {
@@ -27,4 +27,4 @@ const update = {
   }
 };
 
-app.start('my-app', null, view, update);
+new Component(null, view, update).mount('my-app');
