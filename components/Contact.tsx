@@ -10,12 +10,8 @@ export default class extends Component {
   }
 
   update = {
-    '/contact': async _ => {
-      const state = new Promise(resolve =>
-        setTimeout(() => resolve(new Date().toLocaleTimeString()), 200));
-      console.log(state);
-      return state;
-    }
+    '/contact': async _ => new Promise(resolve =>
+      setTimeout(() => resolve(new Date().toLocaleTimeString() + ' - delayed'), 200))
   }
 }
 
