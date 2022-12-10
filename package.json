@@ -23,7 +23,7 @@
   "dependencies": {
     "@types/node": "^14.14.16",
     "apprun": "^2.26.3",
-    "express": "^4.17.1"
+    "express": "^4.17.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.6",
